@@ -22,6 +22,12 @@ public:
   TgMsg (std::string &&chat_title, std::string &&sender,
 	 std::string &&text_content, int32_t tstamp = 0);
 
+   TgMsg(const std::string &title, const std::string &sender,
+     const std::string &txt, int32_t tstamp, 
+     std::uint32_t id, std::int64_t from_chat_id, 
+     std::int64_t to_chat_id, std::int64_t message_id);
+
+
   inline const std::string &get_chat_title () const { return this->title_; }
 
   inline bool is_from_tgfocus () const
@@ -60,6 +66,10 @@ public:
     return ret;
   }
 
+  std::int64_t getFromChatId() const { return from_chat_id_; }
+  std::int64_t getToChatId() const { return to_chat_id_; }
+  std::int64_t getMessageId() const { return message_id_; }
+
   friend std::ostream &operator<< (std::ostream &os, const TgMsg &msg);
 
 private:
@@ -68,6 +78,9 @@ private:
   std::string txt_;
   std::string tstamp_;
   std::uint32_t id_;
+  std::int64_t from_chat_id_;
+  std::int64_t to_chat_id_;
+  std::int64_t message_id_;
 };
 
 // Check host environment supports decoration.
