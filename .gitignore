@@ -3,6 +3,7 @@
 *.#
 
 *.session
+.history
 
 Cargo.lock
 *target*
