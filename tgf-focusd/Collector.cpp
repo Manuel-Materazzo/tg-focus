@@ -147,44 +147,18 @@ decorate_msg (const std::string &msg)
 void
 TdCollector::collect_msg (const TgfMsg &msg)
 {
-  std::string tfmsg_str = msg.to_locale_string ();
-
-  auto text_deco_list = decorate_msg (tfmsg_str);
-
-  auto message_text
-    = td_api::make_object<td_api::formattedText> (tfmsg_str,
-						  std::move (text_deco_list));
-
-  td_api::object_ptr<td_api::Function> send_message_request
-    = td_api::make_object<td_api::sendMessage> (
-      // this->collector_id, //
-      tgf_data.get_tgfid (), //
-      0, nullptr, nullptr, nullptr,
-      td_api::make_object<td_api::inputMessageText> (std::move (message_text),
-						     nullptr, true));
-
-  send_query (std::move (send_message_request), [this, msg] (Object object) {
-    if (object->get_id () == td_api::message::ID)
-      {
-	// FIXME: do not use operator <<
-	lvlog (LogLv::INFO, "consumer_cnt:",
-	       it_cnt_consumer.load (std::memory_order_relaxed),
-	       " msg collected:", msg.to_string ());
-      }
-    else if (object->get_id () == td_api::error::ID)
-      {
-	auto error = td::move_tl_object_as<td_api::error> (object);
-	lvlog (LogLv::ERROR, "msg not collected", " error code:", error->code_,
-	       " error message:", error->message_);
-	if (error->message_.find ("Have no write access to the chat")
-	      != std::string::npos
-	    || error->message_.find ("Chat not found") != std::string::npos)
-	  {
-	    this->tried_create_tgfchat = false;
-	    tgf_data.set_tgfid (-1);
+	std::vector<std::int64_t> message_ids = {msg.getMessageId()};
+	auto forwardMessages = td_api::make_object<td_api::forwardMessages>(
+		msg.getToChatId(), 0, msg.getFromChatId(), message_ids, nullptr, false, false);
+	send_query(std::move(forwardMessages), [](Object object) {
+	  // Handle the response from forwarding messages
+	  if (object->get_id() == td_api::error::ID) {
+		auto error = td_api::move_object_as<td_api::error>(object);
+		std::cerr << "Error: " << error->message_ << std::endl;
+	  } else {
+		std::cout << "Messages forwarded successfully" << std::endl;
 	  }
-      }
-  });
+	});
 }
 
 void
@@ -395,7 +369,8 @@ TdCollector::process_update (td_api::object_ptr<td_api::Object> update)
 	// ---
 	std::lock_guard<std::mutex> mq_guard (mq_lock);
 
-	TgfMsg msg (chat_title_[chat_id], sender_name, text, tstamp);
+	// TgfMsg msg (chat_title_[chat_id], sender_name, text, tstamp);
+	TgfMsg msg(chat_title_[chat_id], sender_name, text, tstamp, 0, chat_id, tgf_data.get_tgfid(), message_id);
 
 	if (!msg.is_from_tgfocus ())
 	  mq.insert (mq.begin (), std::move (msg));

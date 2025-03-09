@@ -34,6 +34,21 @@ TgfMsg::TgfMsg (std::string &chat_title, std::string &sender,
   this->id_ = 0;
 }
 
+TgfMsg::TgfMsg (std::string &title, std::string &sender,
+  std::string &txt, int32_t tstamp, 
+  std::uint32_t id, std::int64_t from_chat_id, 
+  std::int64_t to_chat_id, std::int64_t message_id)
+{
+  this->title_ = (title);
+  this->sender_ = (sender);
+  this->txt_ = (txt);
+  this->tstamp_ = make_timestamp_readable (tstamp);
+  this->id_ = (id);
+  this->from_chat_id_ = (from_chat_id);
+  this->to_chat_id_ = (to_chat_id);
+  this->message_id_ = (message_id);
+}
+
 std::string
 TgfMsg::to_locale_string () const
 {

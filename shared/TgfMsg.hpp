@@ -17,10 +17,15 @@ public:
   TgfMsg () = default;
 
   TgfMsg (std::string &chat_title, std::string &sender,
-	 std::string &text_content, int32_t tstamp = 0);
+	  std::string &text_content, int32_t tstamp = 0);
 
   TgfMsg (std::string &&chat_title, std::string &&sender,
-	 std::string &&text_content, int32_t tstamp = 0);
+	  std::string &&text_content, int32_t tstamp = 0);
+
+  TgfMsg (std::string &title, std::string &sender,
+	  std::string &txt, int32_t tstamp, std::uint32_t id,
+	  std::int64_t from_chat_id, std::int64_t to_chat_id,
+	  std::int64_t message_id);
 
   inline const std::string &get_chat_title () const { return this->title_; }
 
@@ -34,6 +39,10 @@ public:
   inline const std::string &get_text_content () const { return this->txt_; }
 
   inline const std::string &get_timestamp () const { return this->tstamp_; }
+
+  std::int64_t getFromChatId() const { return from_chat_id_; }
+  std::int64_t getToChatId() const { return to_chat_id_; }
+  std::int64_t getMessageId() const { return message_id_; }
 
   inline void set_id (uint32_t n) { this->id_ = n; }
 
@@ -68,6 +77,9 @@ private:
   std::string txt_;
   std::string tstamp_;
   std::uint32_t id_;
+  std::int64_t from_chat_id_;
+  std::int64_t to_chat_id_;
+  std::int64_t message_id_;
 };
 
 // Check host environment supports decoration.
