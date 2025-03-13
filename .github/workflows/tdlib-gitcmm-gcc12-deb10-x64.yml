@@ -5,7 +5,6 @@ on:
 
 jobs:
   job1:
-    if: contains(github.event.head_commit.message, 'build-tdlib-gitcmm-gcc12-deb10-x64') == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

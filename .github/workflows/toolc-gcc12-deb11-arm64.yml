@@ -5,7 +5,6 @@ on:
 
 jobs:
   job1:
-    if: contains(github.event.head_commit.message, 'build-toolc-gcc12-deb11-arm64') == true
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Set env
