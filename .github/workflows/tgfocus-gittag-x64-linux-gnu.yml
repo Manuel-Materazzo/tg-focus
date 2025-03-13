@@ -1,9 +1,7 @@
 name: build-tgfocus-gittag-x64-linux-gnu
 run-name: Build tgfocus-gittag-x64-linux-gnu
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
   job1:

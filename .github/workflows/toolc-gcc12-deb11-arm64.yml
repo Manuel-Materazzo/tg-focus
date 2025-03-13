@@ -1,9 +1,7 @@
 name: build-toolc-gcc12-deb11-arm64
 run-name: Build toolc-gcc12-deb11-arm64
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
   job1:

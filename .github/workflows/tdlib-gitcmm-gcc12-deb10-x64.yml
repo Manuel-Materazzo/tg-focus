@@ -1,9 +1,7 @@
 name: build-tdlib-gitcmm-gcc12-deb10-x64
 run-name: Build tdlib-gitcmm-gcc12-deb10-x64
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
   job1:

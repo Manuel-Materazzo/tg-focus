@@ -147,18 +147,24 @@ decorate_msg (const std::string &msg)
 void
 TdCollector::collect_msg (const TgfMsg &msg)
 {
-	std::vector<std::int64_t> message_ids = {msg.getMessageId()};
-	auto forwardMessages = td_api::make_object<td_api::forwardMessages>(
-		msg.getToChatId(), 0, msg.getFromChatId(), message_ids, nullptr, false, false);
-	send_query(std::move(forwardMessages), [](Object object) {
-	  // Handle the response from forwarding messages
-	  if (object->get_id() == td_api::error::ID) {
-		auto error = td_api::move_object_as<td_api::error>(object);
-		std::cerr << "Error: " << error->message_ << std::endl;
-	  } else {
-		std::cout << "Messages forwarded successfully" << std::endl;
-	  }
-	});
+  std::vector<std::int64_t> message_ids = {msg.getMessageId ()};
+  auto forwardMessages
+    = td_api::make_object<td_api::forwardMessages> (msg.getToChatId (), 0,
+						    msg.getFromChatId (),
+						    message_ids, nullptr, false,
+						    false);
+  send_query (std::move (forwardMessages), [] (Object object) {
+    // Handle the response from forwarding messages
+    if (object->get_id () == td_api::error::ID)
+      {
+	auto error = td_api::move_object_as<td_api::error> (object);
+	std::cerr << "Error: " << error->message_ << std::endl;
+      }
+    else
+      {
+	std::cout << "Messages forwarded successfully" << std::endl;
+      }
+  });
 }
 
 void
@@ -370,7 +376,8 @@ TdCollector::process_update (td_api::object_ptr<td_api::Object> update)
 	std::lock_guard<std::mutex> mq_guard (mq_lock);
 
 	// TgfMsg msg (chat_title_[chat_id], sender_name, text, tstamp);
-	TgfMsg msg(chat_title_[chat_id], sender_name, text, tstamp, 0, chat_id, tgf_data.get_tgfid(), message_id);
+	TgfMsg msg (chat_title_[chat_id], sender_name, text, tstamp, 0, chat_id,
+		    tgf_data.get_tgfid (), message_id);
 
 	if (!msg.is_from_tgfocus ())
 	  mq.insert (mq.begin (), std::move (msg));
